@@ -274,9 +274,9 @@ int sip_parse_events(struct esp_sip *sip, u8 *buf)
 				 if (counter++ < 2) {
 					 esp_dbg(ESP_ATE, "ATE: %s \n", ep);
 				 }
-
+#ifdef TEST_MODE
 				 esp_test_ate_done_cb(ep);
-
+#endif
 				 break;
 			 }
 	case SIP_EVT_INIT_EP: {

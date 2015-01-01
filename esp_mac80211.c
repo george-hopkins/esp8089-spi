@@ -15,7 +15,9 @@
 #include <net/regulatory.h>
 #endif
 /* for support scan in p2p concurrent */
-#include <../net/mac80211/ieee80211_i.h>
+#ifdef P2P_CONCURRENT
+#include <net/mac80211/ieee80211_i.h>
+#endif
 #include "esp_pub.h"
 #include "esp_sip.h"
 #include "esp_ctrl.h"
@@ -545,7 +547,7 @@ static void esp_op_bss_info_changed(struct ieee80211_hw *hw,
     }
 #else
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 37))
-	struct ieee80211_sub_if_data *sdata = vif_to_sdata(vif);
+//	struct ieee80211_sub_if_data *sdata = vif_to_sdata(vif);
 #endif
 
 	// ieee80211_bss_conf(include/net/mac80211.h) is included in ieee80211_sub_if_data(net/mac80211/ieee80211_i.h) , does bssid=ieee80211_if_ap's ssid ?
@@ -582,11 +584,11 @@ static void esp_op_bss_info_changed(struct ieee80211_hw *hw,
 				sip_send_bss_info_update(epub, evif, (u8*)info->bssid, 2);
 				evif->ap_up = true;
 			} else if (!info->enable_beacon && evif->ap_up &&
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 37))
-                    !test_bit(SDATA_STATE_OFFCHANNEL, &sdata->state)
-#else
+//#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 37))
+//                    !test_bit(SDATA_STATE_OFFCHANNEL, &sdata->state)
+//#else
                     true
-#endif
+//#endif
                     ) {
 				ESP_IEEE80211_DBG(ESP_DBG_TRACE, " %s AP disable beacon, interval is %d\n", __func__, info->beacon_int);
 				evif->beacon_interval = 0;
