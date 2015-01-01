@@ -1100,26 +1100,19 @@ void esp_stability_test(char *filename,struct esp_pub *epub)
                         sprintf(test_res_str, "error, count = %d !!!\n", count);
 
                         printk("%s\n", test_res_str);
-#if defined(ANDROID) && defined(ESP_ANDROID_LOGGER)
-                        android_readwrite_file(filename, NULL, test_res_str, strlen(test_res_str));
-#endif
                         goto _out;
                     }
                 }
 
             }
-#if defined(ANDROID) && defined(ESP_ANDROID_LOGGER)
-            android_request_init_conf();
-#endif
+
             if(sif_get_ate_config() == 0)
             {
 
                 sprintf(test_res_str, "ok, count = %d !!!\n", count);
 
                 printk("%s\n", test_res_str);
-#if defined(ANDROID) && defined(ESP_ANDROID_LOGGER)
-                android_readwrite_file(filename, NULL, test_res_str, strlen(test_res_str));
-#endif
+
                 goto _out;
             }
 
@@ -1129,9 +1122,7 @@ void esp_stability_test(char *filename,struct esp_pub *epub)
                 sprintf(test_res_str, "error, count = %d !!!\n", count);
 
                 printk("%s\n", test_res_str);
-#if defined(ANDROID) && defined(ESP_ANDROID_LOGGER)
-                android_readwrite_file(filename, NULL, test_res_str, strlen(test_res_str));
-#endif
+
                 goto _out;
             }
 
@@ -1140,9 +1131,6 @@ void esp_stability_test(char *filename,struct esp_pub *epub)
 
     sprintf(test_res_str, "ok, count = %d !!!\n", count);
     printk("%s\n", test_res_str);
-#if defined(ANDROID) && defined(ESP_ANDROID_LOGGER)
-    android_readwrite_file(filename, NULL, test_res_str, strlen(test_res_str));
-#endif
 
 _out:
     kfree(rx_buf);
@@ -1198,9 +1186,7 @@ void esp_rate_test(char *filename,struct esp_pub *epub)
     sprintf(test_res_str, "ok,rw_time=%lu,read_time=%lu,write_time=%lu !!!\n",test_time_rw,test_time_read,test_time_write);
 
     printk("%s\n", test_res_str);
-#if defined(ANDROID) && defined(ESP_ANDROID_LOGGER)
-    android_readwrite_file(filename, NULL, test_res_str, strlen(test_res_str));
-#endif  
+
     kfree(tx_buf);
     kfree(rx_buf);
 }
@@ -1274,9 +1260,7 @@ void esp_resp_test(char *filename,struct esp_pub *epub)
                             sprintf(test_res_str, "error, count = %d !!!\n", count);
 
                             printk("%s\n", test_res_str);
-#if defined(ANDROID) && defined(ESP_ANDROID_LOGGER)
-                            android_readwrite_file(filename, NULL, test_res_str, strlen(test_res_str));
-#endif
+
                             goto _out;
                         }
                     }
@@ -1300,9 +1284,7 @@ void esp_resp_test(char *filename,struct esp_pub *epub)
                         sprintf(test_res_str, "error, count = %d !!!\n", count);
 
                         printk("%s\n", test_res_str);
-#if defined(ANDROID) && defined(ESP_ANDROID_LOGGER)
-                        android_readwrite_file(filename, NULL, test_res_str, strlen(test_res_str));
-#endif
+
                         goto _out;
                     }
                 }
@@ -1317,9 +1299,6 @@ void esp_resp_test(char *filename,struct esp_pub *epub)
               spi_resp->max_dataW_resp_size,spi_resp->max_dataR_resp_size,spi_resp->max_block_dataW_resp_size,spi_resp->max_block_dataR_resp_size,spi_resp->max_cmd_resp_size);
 
     printk("%s\n", test_res_str);
-#if defined(ANDROID) && defined(ESP_ANDROID_LOGGER)
-    android_readwrite_file(filename, NULL, test_res_str, strlen(test_res_str));
-#endif
 
 _out:
     kfree(rx_buf);
@@ -1377,9 +1356,7 @@ void esp_noisefloor_test(char *filename,struct esp_pub *epub)
     }
 
     printk("%s\n", test_res_str);
-#if defined(ANDROID) && defined(ESP_ANDROID_LOGGER)
-    android_readwrite_file(filename, NULL, test_res_str, strlen(test_res_str));
-#endif 
+
     kfree(res_buf);
     kfree(tx_buf);
     kfree(rx_buf);

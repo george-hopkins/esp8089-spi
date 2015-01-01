@@ -24,9 +24,6 @@
 #include "slc_host_register.h"
 #include "esp_version.h"
 #include "esp_ctrl.h"
-#ifdef ANDROID
-#include "esp_android.h"
-#endif /* ANDROID */
 #ifdef USE_EXT_GPIO
 #include "esp_ext.h"
 #endif /* USE_EXT_GPIO */
@@ -107,10 +104,6 @@ static struct semaphore esp_powerup_sem;
 static enum esp_sdio_state sif_sdio_state;
 struct esp_spi_ctrl *sif_sctrl = NULL;
 static struct esp_spi_resp spi_resp;
-
-#ifdef ESP_ANDROID_LOGGER
-bool log_off = false;
-#endif /* ESP_ANDROID_LOGGER */
 
 #ifdef REQUEST_RTC_IRQ
 extern int request_rtc_irq(void);
@@ -2296,10 +2289,6 @@ static int __init esp_spi_init(void)
         esp_dbg(ESP_SHOW, "\n*****%s %s EAGLE DRIVER VER:%llx*****\n\n", __DATE__, __TIME__, ver);
 #endif
         edf_ret = esp_debugfs_init();
-
-#ifdef ANDROID
-	android_request_init_conf();
-#endif /* defined(ANDROID)*/
 
         esp_wakelock_init();
         esp_wake_lock();

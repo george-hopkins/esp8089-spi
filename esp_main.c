@@ -16,12 +16,8 @@
 #include "esp_sip.h"
 #include "esp_sif.h"
 #include "esp_debug.h"
-#ifdef ANDROID
-#include "esp_android.h"
-#endif /* ANDROID */
 #include "esp_wl.h"
 #include "slc_host_register.h"
-#include "esp_android.h"
 
 struct completion *gl_bootup_cplx = NULL;
 
@@ -78,10 +74,6 @@ int esp_pub_init_all(struct esp_pub *epub)
 		}
 
 		esp_dump_var("esp_msg_level", NULL, &esp_msg_level, ESP_U32);
-
-#if defined(ANDROID) && defined (ESP_ANDROID_LOGGER)
-		esp_dump_var("log_off", NULL, &log_off, ESP_U32);
-#endif /* ESP_ANDROID_LOGGER */
 
 		ret = sip_prepare_boot(epub->sip);
 		if (ret)
@@ -224,22 +216,14 @@ static int esp_download_fw(struct esp_pub * epub)
 
 char * esp_fw_name = epub->sdio_state == ESP_SDIO_STATE_FIRST_INIT ? ESP_FW_NAME1 : ESP_FW_NAME2;
 
-#ifdef ANDROID
-        ret = android_request_firmware(&fw_entry, esp_fw_name, epub->dev);
-#else
         ret = request_firmware(&fw_entry, esp_fw_name, epub->dev);
-#endif //ANDROID
 
         if (ret)
                 return ret;
 
         fw_buf = kmemdup(fw_entry->data, fw_entry->size, GFP_KERNEL);
 
-#ifdef ANDROID
-        android_release_firmware(fw_entry);
-#else
         release_firmware(fw_entry);
-#endif //ANDROID
 
         if (fw_buf == NULL) {
                 return -ENOMEM;

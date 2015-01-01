@@ -17,10 +17,6 @@
 #include "esp_wmac.h"
 #include "esp_utils.h"
 #include "esp_wl.h"
-#ifdef ANDROID
-#include "esp_android.h"
-#include "esp_path.h"
-#endif /* ANDROID */
 #ifdef TEST_MODE
 #include "testmode.h"
 #endif /* TEST_MODE */
@@ -229,16 +225,6 @@ int sip_parse_events(struct esp_sip *sip, u8 *buf)
 		sprintf(test_res_str, "esp_host:%llx\nesp_target: %.*s", DRIVER_VER, *len, p);
 		
                 esp_dbg(ESP_SHOW, "%s\n", test_res_str);
-#ifdef ANDROID
-		if(*len && sip->epub->sdio_state == ESP_SDIO_STATE_FIRST_INIT){
-        		char filename[256];
-			if (mod_eagle_path_get() == NULL)
-        			sprintf(filename, "%s/%s", FWPATH, "test_results");
-			else
-        			sprintf(filename, "%s/%s", mod_eagle_path_get(), "test_results");
-			android_readwrite_file(filename, NULL, test_res_str, strlen(test_res_str));
-		}
-#endif
                 break;
         }
         case SIP_EVT_TRC_AMPDU: {
@@ -310,12 +296,9 @@ void sip_send_chip_init(struct esp_sip *sip)
         const struct firmware *fw_entry;
         u8 * esp_init_data = NULL;
         int ret = 0;
-  #ifdef ANDROID
-        ret = android_request_firmware(&fw_entry, ESP_INIT_NAME, sip->epub->dev);
-  #else
+
         ret = request_firmware(&fw_entry, ESP_INIT_NAME, sip->epub->dev);
-  #endif /* ANDROID */
-        
+
         if (ret) {
                 esp_dbg(ESP_DBG_ERROR, "%s =============ERROR! NO INIT DATA!!=================\n", __func__);
 		return;
@@ -324,11 +307,7 @@ void sip_send_chip_init(struct esp_sip *sip)
 
 	size = fw_entry->size;
 
-  #ifdef ANDROID
-        android_release_firmware(fw_entry);
-  #else
         release_firmware(fw_entry);
-  #endif /* ANDROID */
 
         if (esp_init_data == NULL) {
                 esp_dbg(ESP_DBG_ERROR, "%s =============ERROR! NO MEMORY!!=================\n", __func__);
@@ -339,11 +318,6 @@ void sip_send_chip_init(struct esp_sip *sip)
 
 #endif /* !HAS_INIT_DATA */
 
-#ifdef ANDROID
-	//show_init_buf(esp_init_data,size); 
-	fix_init_data(esp_init_data, size);
-	//show_init_buf(esp_init_data,size);
-#endif
 	atomic_sub(1, &sip->tx_credits);
 	
 	sip_send_cmd(sip, SIP_CMD_INIT, size, (void *)esp_init_data);
