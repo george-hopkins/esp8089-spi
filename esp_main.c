@@ -93,10 +93,8 @@ int esp_pub_init_all(struct esp_pub *epub)
 
 #ifndef FPGA_DEBUG
         ret = esp_download_fw(epub);
-#ifdef ESP_USE_SPI
 	if(sif_get_ate_config() != 1)
         	epub->enable_int = 1;
-#endif  
 #ifdef TEST_MODE
         if(sif_get_ate_config() == 6)
         {

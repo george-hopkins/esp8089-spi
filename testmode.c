@@ -15,7 +15,6 @@
 #include <linux/slab.h>
 #include <linux/sched.h>
 #include <linux/kthread.h>
-#include <linux/mmc/host.h>
 #include <net/cfg80211.h>
 #include <net/mac80211.h>
 #include <net/genetlink.h>
@@ -1034,7 +1033,6 @@ void esp_stability_test(char *filename,struct esp_pub *epub)
     char test_res_str[560];
     char *tx_buf =  kzalloc(512*32, GFP_KERNEL);
     char *rx_buf =  kzalloc(512*32, GFP_KERNEL);
-#ifdef ESP_USE_SPI
     struct esp_spi_ctrl *sctrl = NULL;
     struct spi_device *spi = NULL;
     if (epub == NULL) {
@@ -1047,7 +1045,6 @@ void esp_stability_test(char *filename,struct esp_pub *epub)
     	ESSERT(0);
 	return;
     }
-#endif
 
     while(--m)
     {
@@ -1070,7 +1067,6 @@ void esp_stability_test(char *filename,struct esp_pub *epub)
                 {
                     tx_buf[i]=i^0X5A;
                 }
-#ifdef ESP_USE_SPI
                 if(count == 512)
                 {
                     spi_bus_lock(spi->master);
@@ -1082,7 +1078,6 @@ void esp_stability_test(char *filename,struct esp_pub *epub)
                     sif_spi_read_bytes(spi, 0x8010, tx_buf, count, NOT_DUMMYMODE);
                     spi_bus_unlock(spi->master);
                 }
-#endif
                 esp_common_write_with_addr((epub), 0x8010, tx_buf, count,  ESP_SIF_SYNC);
                 memset(rx_buf,0xff,count);
                 esp_common_read_with_addr((epub), 0x8010, rx_buf, count,  ESP_SIF_SYNC);
@@ -1191,7 +1186,6 @@ void esp_rate_test(char *filename,struct esp_pub *epub)
     kfree(rx_buf);
 }
 
-#ifdef ESP_USE_SPI
 void esp_resp_test(char *filename,struct esp_pub *epub)
 {
     int i = 0;
@@ -1305,7 +1299,6 @@ _out:
     kfree(tx_buf);
     kfree(test_res_str);
 }
-#endif
 
 void esp_noisefloor_test(char *filename,struct esp_pub *epub)
 {
@@ -1419,11 +1412,9 @@ void esp_test_init(struct esp_pub *epub)
     } else if(sif_get_ate_config() == 4){
         esp_rate_test(filename,epub);
     }
-#ifdef ESP_USE_SPI
     else if(sif_get_ate_config() == 5){
         esp_resp_test(filename,epub);
     }        
-#endif
     else if(sif_get_ate_config() == 6){
         esp_noisefloor_test(filename,epub);
     }

@@ -1,12 +1,8 @@
 /*
  * Copyright (c) 2010 -2013 Espressif System.
  *
- *   sdio serial i/f driver
- *    - sdio device control routines
- *    - sync/async DMA/PIO read/write
- *
+ *   spi serial i/f driver
  */
-#ifdef ESP_USE_SPI
 
 #include <linux/module.h>
 #include <net/mac80211.h>
@@ -2387,4 +2383,3 @@ static void __exit esp_spi_exit(void)
 MODULE_AUTHOR("Espressif System");
 MODULE_DESCRIPTION("Driver for SPI interconnected eagle low-power WLAN devices");
 MODULE_LICENSE("GPL");
-#endif /* ESP_USE_SPI */
